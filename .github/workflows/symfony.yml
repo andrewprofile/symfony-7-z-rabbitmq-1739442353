@@ -38,8 +38,8 @@ jobs:
       run: |
         php bin/console -V
         php bin/console about
-    - name: Check PSR12 code style (PHP_CodeSniffer)
-      run: phpcs -q --report=checkstyle src --ignore="Migrations/" | cs2pr
+    - name: Check code style
+      uses: docker://oskarstark/php-cs-fixer-ga
     - name: Analyse PHP Code (PHPStan)
       run: vendor/bin/phpstan analyse -l max -c phpstan.neon src
     - name: Execute tests (Unit and Feature tests) via PHPUnit
