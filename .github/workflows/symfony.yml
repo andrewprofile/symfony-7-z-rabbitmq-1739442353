@@ -41,7 +41,7 @@ jobs:
     - name: Check code style
       uses: docker://oskarstark/php-cs-fixer-ga
     - name: Analyse PHP Code (PHPStan)
-      run: vendor/bin/phpstan analyse -l max -c phpstan.neon src
+      run: vendor/bin/phpstan analyse -l max -c phpstan.dist.neon src
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
