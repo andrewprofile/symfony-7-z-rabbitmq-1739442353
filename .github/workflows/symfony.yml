@@ -41,7 +41,7 @@ jobs:
       uses: chekalsky/phpcs-action@v1.2.0
       with:
         enable_warnings: true
-        installed_paths: vendor/squizlabs/php_codesniffer
+        installed_paths: '${{ github.workspace }}/vendor/squizlabs/php_codesniffer'
         phpcs_bin_path: './vendor/bin/phpcs src --ignore="Migrations/"'
     - name: Analyse PHP Code (PHPStan)
       run: vendor/bin/phpstan analyse -l max -c phpstan.neon src
