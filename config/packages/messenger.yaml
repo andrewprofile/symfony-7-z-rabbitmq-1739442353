@@ -1,18 +1,40 @@
 framework:
     messenger:
+        default_bus: app.command_bus
+
+        buses:
+            app.command_bus:
+                default_middleware: false
+                middleware:
+                    - doctrine_ping_connection
+                    - doctrine_close_connection
+                    - doctrine_transaction
+                    - send_message
+                    - handle_message
+            app.event_bus:
+                default_middleware: allow_no_handlers
+                middleware:
+                    - doctrine_transaction
         # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
         # failure_transport: failed
 
         transports:
+            import_customer:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    exchange:
+                        name: import_customer
+                        type: direct
+                    queues:
+                        import_customer: ~
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             async:
-                dsn: '%env(RABBITMQ_URL)%'
-                retry_strategy:
-                    max_retries: 3
-                    multiplier: 2
-            failed: 'doctrine://default?queue_name=failed'
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+            #failed: 'doctrine://default?queue_name=failed'
 
         routing:
+            App\Message\Command\ImportCustomer: import_customer
+            #App\Message\Event\ProgressUpdatedEvent: async
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
 
