@@ -13,6 +13,12 @@ final class ComputeProgressService
     public function compute(string $fileName, int $currentRow, int $totalRows): void
     {
         $progress = ceil(($currentRow * 100) / $totalRows);
+
+        $item = $this->cache->getItem('processed_'.$fileName);
+        $item->set($currentRow);
+        $item->expiresAfter(3600);
+        $this->cache->save($item);
+
         $item = $this->cache->getItem('progress_'.$fileName);
         $item->set($progress);
         $item->expiresAfter(60);
