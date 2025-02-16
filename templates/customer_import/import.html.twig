@@ -5,10 +5,10 @@
         <div class="row">
             <div class="col-sm-12 mt-5 mx-auto">
                 <h1 class="text-center">Import started</h1>
-                <p id="errors"></p>
                 <div class="progress mt-5">
                     <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
                 </div>
+                <p id="report"></p>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
                 progressBar.innerHTML = progress + '%';
 
                 if (progress === 100) {
-                    getErrors();
+                    getReport();
                     clearInterval(intervalId);
                 }
             });
@@ -34,15 +34,17 @@
 
     const intervalId = setInterval(userAction, 3600);
 
-    const getErrors = () => {
-        fetch('{{ path('customer_import_errors', {'fileName': fileName}) }}')
+    const getReport = () => {
+        fetch('{{ path('customer_import_report', {'fileName': fileName}) }}')
             .then(response => response.json())
             .then(data => {
+                let numberOfProcessedRows = data.processed;
                 let numberOfErrors = data.errors;
-                if (numberOfErrors) {
-                    document.querySelector('#errors').innerHTML = `Number of errors: ${numberOfErrors}`;
+                if (numberOfProcessedRows && numberOfErrors) {
+                    document.querySelector('#report').innerHTML = `Number of processed rows: ${numberOfProcessedRows}` +
+                        + '<br>' + `Number of errors: ${numberOfErrors}`;
                 }
             });
-    };
+    }
 </script>
 {% endblock %}

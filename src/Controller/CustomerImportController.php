@@ -70,13 +70,15 @@ class CustomerImportController extends AbstractController
         ]);
     }
 
-    #[Route('/import/errors/{fileName}', name: 'customer_import_errors', methods: ['GET'])]
+    #[Route('/import/report/{fileName}', name: 'customer_import_report', methods: ['GET'])]
     public function errors(string $fileName, CacheInterface $cache): Response
     {
-        $progress = $cache->getItem('errors_'.$fileName);
+        $errors = $cache->getItem('errors_'.$fileName);
+        $processed = $cache->getItem('processed_'.$fileName);
 
         return $this->json([
-            'errors' => $progress->get() ?? 0,
+            'processed' => $processed->get() ?? 0,
+            'errors' => $errors->get() ?? 0,
         ]);
     }
 }
