@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 mt-5 mx-auto">
+                <h1 class="text-center">Import started</h1>
+                <p id="errors"></p>
+                <div class="progress mt-5">
+                    <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+<script>
+    const userAction = async () => {
+        fetch('{{ path('customer_import_progress', {'fileName': fileName}) }}')
+            .then(response => response.json())
+            .then(data => {
+                let progress = parseInt(data.progress);
+                const progressBar = document.querySelector('#progress-bar');
+                progressBar.style.width = progress + '%';
+                progressBar.innerHTML = progress + '%';
+
+                if (progress === 100) {
+                    getErrors();
+                    clearInterval(intervalId);
+                }
+            });
+    }
+
+    const intervalId = setInterval(userAction, 3600);
+
+    const getErrors = () => {
+        fetch('{{ path('customer_import_errors', {'fileName': fileName}) }}')
+            .then(response => response.json())
+            .then(data => {
+                let numberOfErrors = data.errors;
+                if (numberOfErrors) {
+                    document.querySelector('#errors').innerHTML = `Number of errors: ${numberOfErrors}`;
+                }
+            });
+    };
+</script>
+{% endblock %}

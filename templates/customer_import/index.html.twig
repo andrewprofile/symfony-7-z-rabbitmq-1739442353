@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 mt-5 mx-auto">
+                <h1>Upload Customer List</h1>
+                {{ form_start(form) }}
+                {{ form_row(form.csv_file) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
